@@ -5,7 +5,6 @@ import ViolationList from "./components/ViolationList"
 import Layout from "./components/Layout"
 
 
-
 function App() {
   return (
     <StoreProvider>

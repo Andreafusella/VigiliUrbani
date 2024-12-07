@@ -1,6 +1,7 @@
-import { Children, createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
+import { Children, createContext, Dispatch, ReactNode, SetStateAction, useContext, useState, useEffect } from "react";
 import { IVehicle } from "../interfaces/Vehicle";
 import { IVIolation } from "../interfaces/Violation";
+
 
 interface IStoreContextProps {
     vehicle: IVehicle[];
@@ -9,11 +10,14 @@ interface IStoreContextProps {
     setViolation: Dispatch<SetStateAction<IVIolation[]>>;
     openDialogNewVehicle: boolean;
     setOpenDialogNewVehicle: Dispatch<SetStateAction<boolean>>;
+    buttonOffSubmit: boolean;
+    openDialogDeleteConfirm: boolean;
 
     handleVehicleAdd: (newVehicle: IVehicle) => void
     handleOpenDialogNewVehicle: () => void
     handleCloseDialogNewVehicle: () => void
     handleVehicleDelete: (plate: IVehicle["plate"]) => void
+    handleViolationDelete: (idViolation: IVIolation["idViolation"]) => void
 }
 
 const StoreContext = createContext<IStoreContextProps | null>(null);
@@ -25,6 +29,8 @@ export const StoreProvider = ({children} : {children: ReactNode}) => {
     const [vehicle, setVehicle] = useState<IVehicle[]>([]);
     const [openDialogNewVehicle, setOpenDialogNewVehicle] = useState(false)
     const [violation, setViolation] = useState<IVIolation[]>([])
+    const [buttonOffSubmit, setButtonOffSubmit] = useState(false);
+    const [openDialogDeleteConfirm, setOpenDialogDeleteConfirm] = useState(false)
 
     function handleOpenDialogNewVehicle() {
         setOpenDialogNewVehicle(true);
@@ -32,6 +38,38 @@ export const StoreProvider = ({children} : {children: ReactNode}) => {
 
     function handleCloseDialogNewVehicle() {
         setOpenDialogNewVehicle(false);
+    }
+
+    async function handleViolationDelete(idViolation: IVIolation["idViolation"]) {
+        
+        setButtonOffSubmit(true);
+        const isConfirmed = window.confirm(`Vuoi eliminare la violazione N ${idViolation} ?`)
+
+        if (!isConfirmed) {
+            setButtonOffSubmit(false);
+            return;
+        } 
+            
+
+        const res = await fetch("http://localhost:8000/api/v1/violation", {
+            method: "DELETE",
+            headers: {
+                "ContentType": "application/json"
+            },
+            body: JSON.stringify({
+                idViolation
+            })
+        })
+
+        const data : IVIolation = await res.json();
+
+        setViolation((prevViolation) => prevViolation.filter((v) => v.idViolation != data.idViolation))
+        setButtonOffSubmit(false);
+        setOpenDialogDeleteConfirm(true);
+        
+        setTimeout(() => (
+            setOpenDialogDeleteConfirm(false)
+        ), 2000)
     }
 
     async function handleVehicleDelete(plate: IVehicle["plate"]) {
@@ -65,11 +103,15 @@ export const StoreProvider = ({children} : {children: ReactNode}) => {
         violation,
         setViolation,
         openDialogNewVehicle,
-        setOpenDialogNewVehicle, 
+        setOpenDialogNewVehicle,
+        buttonOffSubmit,
+        openDialogDeleteConfirm,
+
         handleVehicleDelete,
         handleOpenDialogNewVehicle,
         handleCloseDialogNewVehicle,
-        handleVehicleAdd
+        handleVehicleAdd,
+        handleViolationDelete
     }}>{children}</StoreContext.Provider>
 }
 

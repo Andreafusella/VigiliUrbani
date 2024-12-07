@@ -47,13 +47,13 @@ function ViolationList() {
 
     return(
         <>
-            <div className="flex justify-center gap-10 p-4">
-                <div className="flex gap-10 bg-slate-200 rounded-xl p-5 shadow-lg">
-                    <img src="../../../imgVeicoli/auto.png" className="size-40" />
-                    <div className="flex gap-5 items-center text-xl">
-                        <h1>{plate}</h1>
-                        <h1>{model}</h1>
-                        <h1>{brand}</h1>
+            <div className="flex flex-col items-center gap-10 p-4">
+                <div className="flex flex-col justify-center md:flex-row gap-10  rounded-xl p-5 shadow-lg w-full md:max-w-2xl max-w-md">
+                    <img src="../../../imgVeicoli/auto.png" className="md:size-40 size-24 md:m-0 m-auto md:w-auto" />
+                    <div className="flex flex-col md:flex-row gap-5 items-center text-xl">
+                        <h1 className="text-center md:text-left">{plate}</h1>
+                        <h1 className="text-center md:text-left">{model}</h1>
+                        <h1 className="text-center md:text-left">{brand}</h1>
                     </div>
                 </div>
             </div>
