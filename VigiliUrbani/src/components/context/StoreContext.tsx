@@ -12,12 +12,17 @@ interface IStoreContextProps {
     setOpenDialogNewVehicle: Dispatch<SetStateAction<boolean>>;
     buttonOffSubmit: boolean;
     openDialogDeleteConfirm: boolean;
+    openDialogNewViolation: boolean;
+    openDialogNewViolationConfirm: boolean;
 
     handleVehicleAdd: (newVehicle: IVehicle) => void
     handleOpenDialogNewVehicle: () => void
     handleCloseDialogNewVehicle: () => void
+    handleOpenDialogNewViolation: () => void
     handleVehicleDelete: (plate: IVehicle["plate"]) => void
     handleViolationDelete: (idViolation: IVIolation["idViolation"]) => void
+    handleViolationAdd: (newViolation: IVIolation) => void
+    handleOpenDialogNewViolationConfirm: () => void
 }
 
 const StoreContext = createContext<IStoreContextProps | null>(null);
@@ -31,6 +36,8 @@ export const StoreProvider = ({children} : {children: ReactNode}) => {
     const [violation, setViolation] = useState<IVIolation[]>([])
     const [buttonOffSubmit, setButtonOffSubmit] = useState(false);
     const [openDialogDeleteConfirm, setOpenDialogDeleteConfirm] = useState(false)
+    const [openDialogNewViolationConfirm, setOpenDialogNewViolationConfirm] = useState(false)
+    const [openDialogNewViolation, setOpenDialogNewViolation] = useState(false)
 
     function handleOpenDialogNewVehicle() {
         setOpenDialogNewVehicle(true);
@@ -38,6 +45,14 @@ export const StoreProvider = ({children} : {children: ReactNode}) => {
 
     function handleCloseDialogNewVehicle() {
         setOpenDialogNewVehicle(false);
+    }
+
+    function handleOpenDialogNewViolation() {
+        setOpenDialogNewViolation(!openDialogNewViolation);
+    }
+
+    function handleCloseDialogNewViolation() {
+        setOpenDialogNewViolation(false);
     }
 
     async function handleViolationDelete(idViolation: IVIolation["idViolation"]) {
@@ -93,9 +108,22 @@ export const StoreProvider = ({children} : {children: ReactNode}) => {
         
     }
 
-    async function handleVehicleAdd(newVehicle: IVehicle) {
+    function handleOpenDialogNewViolationConfirm() {
+        setOpenDialogNewViolationConfirm(true);
+
+        setTimeout(() => (
+            setOpenDialogNewViolationConfirm(false)
+        ), 2000)
+    }
+
+    function handleVehicleAdd(newVehicle: IVehicle) {
         setVehicle((prevVehicle) => [newVehicle, ...prevVehicle]);
     }
+    function handleViolationAdd(newViolation: IVIolation) {
+        setViolation((prevViolation) => [newViolation, ...prevViolation]);
+    }
+
+
 
     return <StoreContext.Provider value={{
         vehicle, 
@@ -106,12 +134,17 @@ export const StoreProvider = ({children} : {children: ReactNode}) => {
         setOpenDialogNewVehicle,
         buttonOffSubmit,
         openDialogDeleteConfirm,
+        openDialogNewViolation,
+        openDialogNewViolationConfirm,
 
         handleVehicleDelete,
         handleOpenDialogNewVehicle,
         handleCloseDialogNewVehicle,
         handleVehicleAdd,
-        handleViolationDelete
+        handleViolationDelete,
+        handleOpenDialogNewViolation,
+        handleViolationAdd,
+        handleOpenDialogNewViolationConfirm
     }}>{children}</StoreContext.Provider>
 }
 

@@ -4,15 +4,16 @@ import { IVIolation } from "../interfaces/Violation"
 import { useStoreContext } from "../context/StoreContext"
 import DeleteDialogConfirm from "../common/DeleteDialogConfirm";
 
-function CardViolation({tipo, amount, plate, idViolation, date} : IVIolation) {
+function CardViolation({tipo, amount, plate, idViolation, data} : IVIolation) {
     const { handleViolationDelete, buttonOffSubmit} = useStoreContext();
-
+    console.log();
+    
     return(
         <>
             <div className="mt-5 flex justify-center">
                 <div className="border-gray-200 border-[1px] shadow-lg p-5 rounded-xl flex flex-col md:flex-row gap-5 md:gap-20 items-center text-lg font-medium">
                     <h1 className="text-center md:text-left">Id: {idViolation}</h1>
-                    <h1 className="text-center md:text-left">Data: <span>{date.toString()}</span></h1>
+                    <h1 className="text-center md:text-left">Data: <span>{data.toString()}</span></h1>
                     <h1 className="text-center md:text-left">Tipo: {tipo}</h1>
                     <h1 className="text-center md:text-left">Prezzo: {amount} $</h1>
                     <h1 className="text-center md:text-left">Targa: {plate}</h1>
